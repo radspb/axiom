@@ -1,12 +1,9 @@
-20ПЕРВЫЙimport React, { useState, useEffect, useRef } from 'react';
-import { 
-  ArrowRight, CheckCircle2, BarChart3, ShieldCheck, 
-  Drone, Menu, X, ChevronRight, Cpu 
-} from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ArrowRight, CheckCircle2, BarChart3, ShieldCheck, Aperture, Menu, X, ChevronRight } from 'lucide-react';
 
-/* --- КОМПОНЕНТЫ UI --- */
+/* --- РљРћРњРџРћРќР•РќРўР« UI --- */
 
-// Кастомный курсор (Follower) – улучшенная версия с elementFromPoint
+// РљР°СЃС‚РѕРјРЅС‹Р№ РєСѓСЂСЃРѕСЂ (Follower)
 const CustomCursor = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
@@ -14,22 +11,21 @@ const CustomCursor = () => {
   useEffect(() => {
     const onMouseMove = (e) => {
       setPosition({ x: e.clientX, y: e.clientY });
-
-      // Определяем элемент под курсором
-      const elem = document.elementFromPoint(e.clientX, e.clientY);
-      if (elem) {
-        const isInteractive = 
-          elem.tagName === 'BUTTON' || 
-          elem.tagName === 'A' || 
-          elem.closest('.interactive');
-        setIsHovered(!!isInteractive);
+    };
+    const onMouseOver = (e) => {
+      if (e.target.tagName === 'BUTTON' || e.target.tagName === 'A' || e.target.closest('.interactive')) {
+        setIsHovered(true);
       } else {
         setIsHovered(false);
       }
     };
 
     window.addEventListener('mousemove', onMouseMove);
-    return () => window.removeEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseover', onMouseOver);
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseover', onMouseOver);
+    };
   }, []);
 
   return (
@@ -54,7 +50,7 @@ const CustomCursor = () => {
   );
 };
 
-// Эффект зернистости (Noise)
+// Р­С„С„РµРєС‚ Р·РµСЂРЅРёСЃС‚РѕСЃС‚Рё (Noise)
 const NoiseOverlay = () => (
   <div className="fixed inset-0 pointer-events-none z-[50] opacity-[0.03] mix-blend-overlay"
        style={{
@@ -63,7 +59,7 @@ const NoiseOverlay = () => (
   />
 );
 
-// Анимация появления при скролле
+// РђРЅРёРјР°С†РёСЏ РїРѕСЏРІР»РµРЅРёСЏ РїСЂРё СЃРєСЂРѕР»Р»Рµ
 const FadeIn = ({ children, delay = 0, className = "" }) => {
   const [isVisible, setIsVisible] = useState(false);
   const ref = useRef(null);
@@ -93,7 +89,7 @@ const FadeIn = ({ children, delay = 0, className = "" }) => {
   );
 };
 
-/* --- ОСНОВНЫЕ СЕКЦИИ --- */
+/* --- РћРЎРќРћР’РќР«Р• РЎР•РљР¦РР --- */
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -105,65 +101,36 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Блокировка прокрутки при открытом мобильном меню
-  useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [mobileMenuOpen]);
-
-  const scrollToContact = () => {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-    setMobileMenuOpen(false);
-  };
-
   return (
     <nav className={`fixed top-0 w-full z-40 transition-all duration-500 ${isScrolled ? 'py-4 bg-black/80 backdrop-blur-md border-b border-white/5' : 'py-8 bg-transparent'}`}>
       <div className="container mx-auto px-6 flex justify-between items-center">
-        <div className="text-2xl font-bold tracking-[0.2em] text-white interactive cursor-none select-none">
+        <a href="https://radspb.github.io/axiom/" className="text-2xl font-bold tracking-[0.2em] text-white interactive cursor-none select-none hover:text-[#D4AF37] transition-colors">
           AXIOM
-        </div>
+        </a>
         
         {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-8 text-sm font-medium tracking-wide text-gray-300">
-          <a href="#services" className="hover:text-[#D4AF37] transition-colors interactive">ЭКСПЕРТИЗА</a>
-          <a href="#approach" className="hover:text-[#D4AF37] transition-colors interactive">МЕТОД</a>
-          <a href="#cases" className="hover:text-[#D4AF37] transition-colors interactive">КЕЙСЫ</a>
-          <button 
-            onClick={scrollToContact}
-            className="px-6 py-2 border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all duration-300 rounded-sm interactive"
-          >
-            СВЯЗАТЬСЯ
+          <a href="#services" className="hover:text-[#D4AF37] transition-colors interactive">Р­РљРЎРџР•Р РўРР—Рђ</a>
+          <a href="#approach" className="hover:text-[#D4AF37] transition-colors interactive">РњР•РўРћР”</a>
+          <a href="#cases" className="hover:text-[#D4AF37] transition-colors interactive">РљР•Р™РЎР«</a>
+          <button className="px-6 py-2 border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all duration-300 rounded-sm interactive">
+            РЎР’РЇР—РђРўР¬РЎРЇ
           </button>
         </div>
 
         {/* Mobile Menu Button */}
-        <button 
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
-          className="md:hidden text-white"
-          aria-label={mobileMenuOpen ? "Закрыть меню" : "Открыть меню"}
-        >
-          {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+        <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="md:hidden text-white">
+          {mobileMenuOpen ? <X /> : <Menu />}
         </button>
       </div>
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="absolute top-full left-0 w-full bg-black border-b border-white/10 p-6 flex flex-col space-y-4 md:hidden">
-          <a href="#services" className="text-gray-300 py-2" onClick={() => setMobileMenuOpen(false)}>ЭКСПЕРТИЗА</a>
-          <a href="#approach" className="text-gray-300 py-2" onClick={() => setMobileMenuOpen(false)}>МЕТОД</a>
-          <a href="#cases" className="text-gray-300 py-2" onClick={() => setMobileMenuOpen(false)}>КЕЙСЫ</a>
-          <button 
-            onClick={scrollToContact}
-            className="px-6 py-2 border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black transition-all duration-300 rounded-sm interactive w-full"
-          >
-            СВЯЗАТЬСЯ
-          </button>
+          <a href="#services" className="text-gray-300">Р­РљРЎРџР•Р РўРР—Рђ</a>
+          <a href="#approach" className="text-gray-300">РњР•РўРћР”</a>
+          <a href="#cases" className="text-gray-300">РљР•Р™РЎР«</a>
+          <button className="text-[#D4AF37]">РЎР’РЇР—РђРўР¬РЎРЇ</button>
         </div>
       )}
     </nav>
@@ -171,10 +138,6 @@ const Navbar = () => {
 };
 
 const Hero = () => {
-  const scrollToContact = () => {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#050505]">
       {/* Dynamic Background */}
@@ -194,36 +157,30 @@ const Hero = () => {
           
           <FadeIn delay={200}>
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold text-white leading-[1.1] mb-8">
-              ВАШИ ИНВЕСТИЦИИ <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-gray-500">ПОД КОНТРОЛЕМ</span>
+              Р’РђРЁР РРќР’Р•РЎРўРР¦РР <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-gray-500">РџРћР” РљРћРќРўР РћР›Р•Рњ</span>
             </h1>
           </FadeIn>
 
           <FadeIn delay={300}>
             <p className="text-gray-400 text-lg md:text-xl max-w-2xl mb-10 font-light leading-relaxed">
-              Независимый технический надзор и аудит премиальных объектов. 
-              Мы заменяем хаос на стройплощадке на прозрачность цифровой системы.
+              РќРµР·Р°РІРёСЃРёРјС‹Р№ С‚РµС…РЅРёС‡РµСЃРєРёР№ РЅР°РґР·РѕСЂ Рё Р°СѓРґРёС‚ РїСЂРµРјРёР°Р»СЊРЅС‹С… РѕР±СЉРµРєС‚РѕРІ. 
+              РњС‹ Р·Р°РјРµРЅСЏРµРј С…Р°РѕСЃ РЅР° СЃС‚СЂРѕР№РїР»РѕС‰Р°РґРєРµ РЅР° РїСЂРѕР·СЂР°С‡РЅРѕСЃС‚СЊ С†РёС„СЂРѕРІРѕР№ СЃРёСЃС‚РµРјС‹.
             </p>
           </FadeIn>
 
           <FadeIn delay={400}>
             <div className="flex flex-col md:flex-row gap-6">
-              <button 
-                onClick={scrollToContact}
-                className="interactive group relative px-8 py-4 bg-[#D4AF37] text-black font-bold tracking-wider overflow-hidden"
-              >
+              <button className="interactive group relative px-8 py-4 bg-[#D4AF37] text-black font-bold tracking-wider overflow-hidden">
                 <span className="relative z-10 flex items-center gap-2">
-                  ЗАКАЗАТЬ АУДИТ <ArrowRight size={18} />
+                  Р—РђРљРђР—РђРўР¬ РђРЈР”РРў <ArrowRight size={18} />
                 </span>
                 <div className="absolute inset-0 bg-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"></div>
               </button>
               
-              <button 
-                onClick={() => alert('Демо-версия скоро будет доступна')}
-                className="interactive group px-8 py-4 border border-white/20 text-white hover:border-white/50 transition-all flex items-center gap-3"
-              >
+              <button className="interactive group px-8 py-4 border border-white/20 text-white hover:border-white/50 transition-all flex items-center gap-3">
                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                <span>СМОТРЕТЬ ДЕМО</span>
+                <span>РЎРњРћРўР Р•РўР¬ Р”Р•РњРћ</span>
               </button>
             </div>
           </FadeIn>
@@ -244,7 +201,7 @@ const BentoGrid = () => {
       <div className="container mx-auto px-6">
         <FadeIn>
           <h2 className="text-4xl font-bold text-white mb-16 flex items-end gap-4">
-            НАША ЭКСПЕРТИЗА <span className="text-[#D4AF37] text-6xl">.</span>
+            РќРђРЁРђ Р­РљРЎРџР•Р РўРР—Рђ <span className="text-[#D4AF37] text-6xl">.</span>
           </h2>
         </FadeIn>
 
@@ -253,28 +210,23 @@ const BentoGrid = () => {
           {/* Card 1: Large */}
           <FadeIn className="md:col-span-2 relative group overflow-hidden rounded-sm bg-[#111] border border-white/5 hover:border-[#D4AF37]/30 transition-colors">
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent z-10"></div>
-            <img 
-              src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop" 
-              className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 transition-transform duration-700" 
-              alt="Небоскрёб" 
-              loading="lazy"
-            />
+            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop" className="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 transition-transform duration-700" alt="Building" />
             <div className="absolute bottom-0 left-0 p-8 z-20">
               <BarChart3 className="text-[#D4AF37] mb-4 w-10 h-10" />
-              <h3 className="text-2xl text-white font-bold mb-2">Инвестиционный Консалтинг</h3>
-              <p className="text-gray-400 max-w-md">Анализ ликвидности участка и просчет ROI до входа в проект. Мы защищаем ваши деньги еще до того, как они потрачены.</p>
+              <h3 className="text-2xl text-white font-bold mb-2">РРЅРІРµСЃС‚РёС†РёРѕРЅРЅС‹Р№ РљРѕРЅСЃР°Р»С‚РёРЅРі</h3>
+              <p className="text-gray-400 max-w-md">РђРЅР°Р»РёР· Р»РёРєРІРёРґРЅРѕСЃС‚Рё СѓС‡Р°СЃС‚РєР° Рё РїСЂРѕСЃС‡РµС‚ ROI РґРѕ РІС…РѕРґР° РІ РїСЂРѕРµРєС‚. РњС‹ Р·Р°С‰РёС‰Р°РµРј РІР°С€Рё РґРµРЅСЊРіРё РµС‰Рµ РґРѕ С‚РѕРіРѕ, РєР°Рє РѕРЅРё РїРѕС‚СЂР°С‡РµРЅС‹.</p>
             </div>
           </FadeIn>
 
           {/* Card 2 */}
           <FadeIn delay={100} className="relative group overflow-hidden rounded-sm bg-[#111] border border-white/5 hover:border-[#D4AF37]/30 transition-colors p-8 flex flex-col justify-between interactive">
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-              <Drone size={100} />
+              <Aperture size={100} />
             </div>
-            <Drone className="text-[#D4AF37] w-10 h-10" />
+            <Aperture className="text-[#D4AF37] w-10 h-10" />
             <div>
-              <h3 className="text-xl text-white font-bold mb-2">Аэромониторинг</h3>
-              <p className="text-sm text-gray-400">4K видеоотчеты с дронов. Вы видите динамику стройки, а не бумажные отчеты.</p>
+              <h3 className="text-xl text-white font-bold mb-2">РђСЌСЂРѕРјРѕРЅРёС‚РѕСЂРёРЅРі</h3>
+              <p className="text-sm text-gray-400">4K РІРёРґРµРѕРѕС‚С‡РµС‚С‹ СЃ РґСЂРѕРЅРѕРІ. Р’С‹ РІРёРґРёС‚Рµ РґРёРЅР°РјРёРєСѓ СЃС‚СЂРѕР№РєРё, Р° РЅРµ Р±СѓРјР°Р¶РЅС‹Рµ РѕС‚С‡РµС‚С‹.</p>
             </div>
           </FadeIn>
 
@@ -282,8 +234,8 @@ const BentoGrid = () => {
           <FadeIn delay={200} className="relative group overflow-hidden rounded-sm bg-[#111] border border-white/5 hover:border-[#D4AF37]/30 transition-colors p-8 flex flex-col justify-between interactive">
             <ShieldCheck className="text-[#D4AF37] w-10 h-10" />
             <div>
-              <h3 className="text-xl text-white font-bold mb-2">Технический Заказчик</h3>
-              <p className="text-sm text-gray-400">Приемка скрытых работ и жесткий аудит КС-2/КС-3. Экономия бюджета до 30%.</p>
+              <h3 className="text-xl text-white font-bold mb-2">РўРµС…РЅРёС‡РµСЃРєРёР№ Р—Р°РєР°Р·С‡РёРє</h3>
+              <p className="text-sm text-gray-400">РџСЂРёРµРјРєР° СЃРєСЂС‹С‚С‹С… СЂР°Р±РѕС‚ Рё Р¶РµСЃС‚РєРёР№ Р°СѓРґРёС‚ РљРЎ-2/РљРЎ-3. Р­РєРѕРЅРѕРјРёСЏ Р±СЋРґР¶РµС‚Р° РґРѕ 30%.</p>
             </div>
           </FadeIn>
 
@@ -299,9 +251,8 @@ const BentoGrid = () => {
                 </div>
              </div>
              <div className="absolute bottom-0 left-0 p-8 z-20">
-              <Cpu className="text-[#D4AF37] mb-4 w-10 h-10" />
-              <h3 className="text-2xl text-white font-bold mb-2">Цифровой двойник</h3>
-              <p className="text-gray-400 max-w-md">Мы создаем полную цифровую историю объекта. Каждая труба и кабель задокументированы в облаке.</p>
+              <h3 className="text-2xl text-white font-bold mb-2">Р¦РёС„СЂРѕРІРѕР№ РґРІРѕР№РЅРёРє</h3>
+              <p className="text-gray-400 max-w-md">РњС‹ СЃРѕР·РґР°РµРј РїРѕР»РЅСѓСЋ С†РёС„СЂРѕРІСѓСЋ РёСЃС‚РѕСЂРёСЋ РѕР±СЉРµРєС‚Р°. РљР°Р¶РґР°СЏ С‚СЂСѓР±Р° Рё РєР°Р±РµР»СЊ Р·Р°РґРѕРєСѓРјРµРЅС‚РёСЂРѕРІР°РЅС‹ РІ РѕР±Р»Р°РєРµ.</p>
             </div>
           </FadeIn>
 
@@ -317,10 +268,10 @@ const Numbers = () => {
       <div className="container mx-auto px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {[
-            { label: "Сэкономлено клиентам", value: ">250 млн ?" },
-            { label: "Объектов в аудите", value: "14" },
-            { label: "Опыт управления", value: "15 Лет" },
-            { label: "ROI Инвесторов", value: "35%+" },
+            { label: "РЎСЌРєРѕРЅРѕРјР»РµРЅРѕ РєР»РёРµРЅС‚Р°Рј", value: ">250 РјР»РЅ в‚Ѕ" },
+            { label: "РћР±СЉРµРєС‚РѕРІ РІ Р°СѓРґРёС‚Рµ", value: "14" },
+            { label: "РћРїС‹С‚ СѓРїСЂР°РІР»РµРЅРёСЏ", value: "15 Р›РµС‚" },
+            { label: "ROI РРЅРІРµСЃС‚РѕСЂРѕРІ", value: "35%+" },
           ].map((stat, idx) => (
             <FadeIn key={idx} delay={idx * 100}>
               <div className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2">{stat.value}</div>
@@ -340,25 +291,25 @@ const Philosophy = () => {
         <div className="flex flex-col md:flex-row items-center gap-16">
           <div className="w-full md:w-1/2">
              <FadeIn>
-               <h2 className="text-sm font-bold text-[#D4AF37] tracking-[0.3em] mb-4 uppercase">Философия</h2>
+               <h2 className="text-sm font-bold text-[#D4AF37] tracking-[0.3em] mb-4 uppercase">Р¤РёР»РѕСЃРѕС„РёСЏ</h2>
                <h3 className="text-3xl md:text-5xl text-white font-bold mb-8 leading-tight">
-                 МЫ НЕ СТРОИМ. <br />
-                 МЫ ЗАЩИЩАЕМ <br />
-                 ТЕХ, КТО ПЛАТИТ.
+                 РњР« РќР• РЎРўР РћРРњ. <br />
+                 РњР« Р—РђР©РР©РђР•Рњ <br />
+                 РўР•РҐ, РљРўРћ РџР›РђРўРРў.
                </h3>
                <div className="space-y-6 text-gray-400 text-lg font-light leading-relaxed">
                  <p>
-                   Строительная отрасль непрозрачна по своей природе. Подрядчику выгодно скрыть брак и раздуть смету. 
-                   Инвестору выгодно получить качество и соблюсти сроки. Это конфликт интересов.
+                   РЎС‚СЂРѕРёС‚РµР»СЊРЅР°СЏ РѕС‚СЂР°СЃР»СЊ РЅРµРїСЂРѕР·СЂР°С‡РЅР° РїРѕ СЃРІРѕРµР№ РїСЂРёСЂРѕРґРµ. РџРѕРґСЂСЏРґС‡РёРєСѓ РІС‹РіРѕРґРЅРѕ СЃРєСЂС‹С‚СЊ Р±СЂР°Рє Рё СЂР°Р·РґСѓС‚СЊ СЃРјРµС‚Сѓ. 
+                   РРЅРІРµСЃС‚РѕСЂСѓ РІС‹РіРѕРґРЅРѕ РїРѕР»СѓС‡РёС‚СЊ РєР°С‡РµСЃС‚РІРѕ Рё СЃРѕР±Р»СЋСЃС‚Рё СЃСЂРѕРєРё. Р­С‚Рѕ РєРѕРЅС„Р»РёРєС‚ РёРЅС‚РµСЂРµСЃРѕРІ.
                  </p>
                  <p>
-                   AXIOM выступает на вашей стороне. Мы используем управленческий опыт уровня топ-менеджмента 
-                   федеральных компаний, чтобы сделать этот процесс предсказуемым, как швейцарские часы.
+                   AXIOM РІС‹СЃС‚СѓРїР°РµС‚ РЅР° РІР°С€РµР№ СЃС‚РѕСЂРѕРЅРµ. РњС‹ РёСЃРїРѕР»СЊР·СѓРµРј СѓРїСЂР°РІР»РµРЅС‡РµСЃРєРёР№ РѕРїС‹С‚ СѓСЂРѕРІРЅСЏ С‚РѕРї-РјРµРЅРµРґР¶РјРµРЅС‚Р° 
+                   С„РµРґРµСЂР°Р»СЊРЅС‹С… РєРѕРјРїР°РЅРёР№, С‡С‚РѕР±С‹ СЃРґРµР»Р°С‚СЊ СЌС‚РѕС‚ РїСЂРѕС†РµСЃСЃ РїСЂРµРґСЃРєР°Р·СѓРµРјС‹Рј, РєР°Рє С€РІРµР№С†Р°СЂСЃРєРёРµ С‡Р°СЃС‹.
                  </p>
                </div>
                
                <div className="mt-10 flex flex-col gap-4">
-                 {['Полная анонимность клиента', 'Отсутствие аффилированности с подрядчиками', 'Юридическая чистота'].map((item, i) => (
+                 {['РџРѕР»РЅР°СЏ Р°РЅРѕРЅРёРјРЅРѕСЃС‚СЊ РєР»РёРµРЅС‚Р°', 'РћС‚СЃСѓС‚СЃС‚РІРёРµ Р°С„С„РёР»РёСЂРѕРІР°РЅРЅРѕСЃС‚Рё СЃ РїРѕРґСЂСЏРґС‡РёРєР°РјРё', 'Р®СЂРёРґРёС‡РµСЃРєР°СЏ С‡РёСЃС‚РѕС‚Р°'].map((item, i) => (
                    <div key={i} className="flex items-center gap-4 text-white">
                      <CheckCircle2 className="text-[#D4AF37]" size={20} />
                      <span>{item}</span>
@@ -370,18 +321,13 @@ const Philosophy = () => {
           <div className="w-full md:w-1/2 relative">
              <FadeIn delay={200}>
                <div className="relative aspect-[4/5] rounded-sm overflow-hidden border border-white/10 group">
-                 <img 
-                   src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=2070&auto=format&fit=crop" 
-                   alt="Строительная площадка" 
-                   className="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all duration-700" 
-                   loading="lazy"
-                 />
+                 <img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?q=80&w=2070&auto=format&fit=crop" alt="Construction" className="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all duration-700" />
                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
                  
                  {/* Decorative Overlay */}
                  <div className="absolute bottom-8 left-8 border border-white/30 bg-black/50 backdrop-blur-md p-6 max-w-xs">
-                    <p className="text-white text-sm italic">"Контроль — это высшая форма доверия."</p>
-                    <p className="text-[#D4AF37] text-xs mt-2 uppercase tracking-wide">Основатель Axiom</p>
+                    <p className="text-white text-sm italic">"РљРѕРЅС‚СЂРѕР»СЊ вЂ” СЌС‚Рѕ РІС‹СЃС€Р°СЏ С„РѕСЂРјР° РґРѕРІРµСЂРёСЏ."</p>
+                    <p className="text-[#D4AF37] text-xs mt-2 uppercase tracking-wide">РћСЃРЅРѕРІР°С‚РµР»СЊ Axiom</p>
                  </div>
                </div>
              </FadeIn>
@@ -392,127 +338,42 @@ const Philosophy = () => {
   );
 };
 
-// Добавленная секция Кейсы
-const Cases = () => {
-  const cases = [
-    { title: 'Жилой комплекс "Берег"', desc: 'Экономия бюджета 27% за счёт выявления избыточных сметных расчётов.', year: '2025' },
-    { title: 'Офисный центр "Плаза"', desc: 'Контроль качества монолитных работ, предотвращение брака на раннем этапе.', year: '2024' },
-    { title: 'Элитный посёлок "Hills"', desc: 'Аудит инженерных систем, снижение эксплуатационных расходов на 40%.', year: '2024' },
-  ];
-
-  return (
-    <section id="cases" className="py-24 bg-black relative">
-      <div className="container mx-auto px-6">
-        <FadeIn>
-          <h2 className="text-4xl font-bold text-white mb-16 flex items-end gap-4">
-            РЕАЛЬНЫЕ КЕЙСЫ <span className="text-[#D4AF37] text-6xl">.</span>
-          </h2>
-        </FadeIn>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {cases.map((item, idx) => (
-            <FadeIn key={idx} delay={idx * 100} className="group">
-              <div className="border border-white/10 p-8 hover:border-[#D4AF37]/30 transition-all bg-[#0a0a0a] rounded-sm">
-                <div className="text-[#D4AF37] text-sm mb-4">{item.year}</div>
-                <h3 className="text-2xl text-white font-bold mb-3">{item.title}</h3>
-                <p className="text-gray-400 text-sm mb-6">{item.desc}</p>
-                <div className="flex items-center text-[#D4AF37] group-hover:gap-2 transition-all">
-                  <span className="text-sm uppercase tracking-wider">Подробнее</span>
-                  <ChevronRight size={16} />
-                </div>
-              </div>
-            </FadeIn>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    message: ''
-  });
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Здесь можно отправить данные на сервер
-    console.log('Форма отправлена:', formData);
-    alert('Спасибо! Ваша заявка принята. Мы свяжемся с вами в ближайшее время.');
-    // Очистка формы
-    setFormData({ name: '', phone: '', message: '' });
-  };
-
   return (
-    <section id="contact" className="py-24 bg-black relative border-t border-white/10">
+    <section className="py-24 bg-black relative border-t border-white/10">
       <div className="container mx-auto px-6">
         <div className="max-w-4xl mx-auto text-center mb-16">
-          <h2 className="text-4xl font-bold text-white mb-6">ГОТОВЫ К ПРАВДЕ?</h2>
-          <p className="text-gray-400">Оставьте заявку на бесплатный экспресс-аудит сметы или участка.</p>
+          <h2 className="text-4xl font-bold text-white mb-6">Р“РћРўРћР’Р« Рљ РџР РђР’Р”Р•?</h2>
+          <p className="text-gray-400">РћСЃС‚Р°РІСЊС‚Рµ Р·Р°СЏРІРєСѓ РЅР° Р±РµСЃРїР»Р°С‚РЅС‹Р№ СЌРєСЃРїСЂРµСЃСЃ-Р°СѓРґРёС‚ СЃРјРµС‚С‹ РёР»Рё СѓС‡Р°СЃС‚РєР°.</p>
         </div>
 
         <div className="max-w-2xl mx-auto bg-[#0a0a0a] p-8 md:p-12 border border-white/5 rounded-sm relative">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent"></div>
           
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label htmlFor="name" className="text-xs text-gray-500 uppercase tracking-widest">Имя</label>
-                <input 
-                  type="text" 
-                  id="name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  required
-                  className="w-full bg-[#111] border border-white/10 p-4 text-white focus:border-[#D4AF37] focus:outline-none transition-colors" 
-                  placeholder="Иван Петров" 
-                />
+                <label className="text-xs text-gray-500 uppercase tracking-widest">РРјСЏ</label>
+                <input type="text" className="w-full bg-[#111] border border-white/10 p-4 text-white focus:border-[#D4AF37] focus:outline-none transition-colors" placeholder="РРІР°РЅ РџРµС‚СЂРѕРІ" />
               </div>
               <div className="space-y-2">
-                <label htmlFor="phone" className="text-xs text-gray-500 uppercase tracking-widest">Телефон</label>
-                <input 
-                  type="tel" 
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required
-                  className="w-full bg-[#111] border border-white/10 p-4 text-white focus:border-[#D4AF37] focus:outline-none transition-colors" 
-                  placeholder="+7 (999) 000-00-00" 
-                />
+                <label className="text-xs text-gray-500 uppercase tracking-widest">РўРµР»РµС„РѕРЅ</label>
+                <input type="tel" className="w-full bg-[#111] border border-white/10 p-4 text-white focus:border-[#D4AF37] focus:outline-none transition-colors" placeholder="+7 (999) 000-00-00" />
               </div>
             </div>
             <div className="space-y-2">
-              <label htmlFor="message" className="text-xs text-gray-500 uppercase tracking-widest">Ваш запрос</label>
-              <textarea 
-                id="message"
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                required
-                className="w-full bg-[#111] border border-white/10 p-4 text-white focus:border-[#D4AF37] focus:outline-none transition-colors h-32" 
-                placeholder="Аудит сметы / Проверка участка..."
-              ></textarea>
+              <label className="text-xs text-gray-500 uppercase tracking-widest">Р’Р°С€ Р·Р°РїСЂРѕСЃ</label>
+              <textarea className="w-full bg-[#111] border border-white/10 p-4 text-white focus:border-[#D4AF37] focus:outline-none transition-colors h-32" placeholder="РђСѓРґРёС‚ СЃРјРµС‚С‹ / РџСЂРѕРІРµСЂРєР° СѓС‡Р°СЃС‚РєР°..."></textarea>
             </div>
             
-            <button 
-              type="submit"
-              className="w-full py-5 bg-white text-black font-bold uppercase tracking-widest hover:bg-[#D4AF37] transition-colors duration-300"
-            >
-              Отправить заявку
+            <button className="w-full py-5 bg-white text-black font-bold uppercase tracking-widest hover:bg-[#D4AF37] transition-colors duration-300">
+              РћС‚РїСЂР°РІРёС‚СЊ Р·Р°СЏРІРєСѓ
             </button>
           </form>
         </div>
         
         <div className="mt-20 flex justify-between items-end border-t border-white/10 pt-8 text-gray-600 text-xs uppercase tracking-widest">
-           <div>© {new Date().getFullYear()} AXIOM GROUP.</div>
+           <a href="https://radspb.github.io/axiom/" className="hover:text-white transition-colors">В© 2026 AXIOM GROUP.</a>
            <div className="flex gap-4">
              <a href="#" className="hover:text-white transition-colors">Privacy</a>
              <a href="#" className="hover:text-white transition-colors">Terms</a>
@@ -526,6 +387,10 @@ const Contact = () => {
 /* --- MAIN APP --- */
 
 const App = () => {
+  useEffect(() => {
+    document.title = "AXIOM | РРЅРІРµСЃС‚РёС†РёРѕРЅРЅС‹Р№ РљРѕРЅСЃР°Р»С‚РёРЅРі";
+  }, []);
+
   return (
     <div className="bg-black min-h-screen cursor-none selection:bg-[#D4AF37] selection:text-black">
       <CustomCursor />
@@ -535,23 +400,17 @@ const App = () => {
       <BentoGrid />
       <Numbers />
       <Philosophy />
-      <Cases />       {/* Добавленная секция */}
       <Contact />
       
-      {/* Глобальные стили — обычный тег style без атрибутов jsx */}
-      <style>{`
+      <style jsx global>{`
         @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap');
         
         body {
           font-family: 'Manrope', sans-serif;
-          background-color: #000;
         }
 
-        /* На мобильных устройствах отключаем кастомный курсор */
-        @media (max-width: 768px) {
-          .cursor-none {
-            cursor: auto;
-          }
+        .interactive:hover {
+          cursor: none;
         }
         
         @keyframes blob {
@@ -567,7 +426,7 @@ const App = () => {
           animation-delay: 2s;
         }
         
-        /* Стилизация скроллбара */
+        /* РЎРєСЂС‹С‚РёРµ СЃС‚Р°РЅРґР°СЂС‚РЅРѕРіРѕ СЃРєСЂРѕР»Р»Р±Р°СЂР° РґР»СЏ С‡РёСЃС‚РѕС‚С‹ РґРёР·Р°Р№РЅР° */
         ::-webkit-scrollbar {
             width: 8px;
         }
