@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AXIOM — защита инвестиций в премиальном строительстве</title>
+    <!-- Font Awesome 6 (бесплатные иконки) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts: строгий современный гротеск -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.5;
+            color: #1e1e1e;
+            background-color: #ffffff;
+            scroll-behavior: smooth;
+        }
+
+        /* Контейнер слайдов */
+        .slides {
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Каждый слайд на всю высоту экрана */
+        .slide {
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4rem 2rem;
+            position: relative;
+            background-color: #fff;
+        }
+
+        /* Затемнение для фоновых изображений */
+        .slide-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            z-index: 0;
+        }
+        .slide-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6); /* затемнение для читаемости текста */
+        }
+
+        /* Контейнер контента */
+        .content {
+            position: relative;
+            z-index: 2;
+            max-width: 1280px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Типографика */
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            margin-bottom: 2rem;
+        }
+
+        h3 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .subhead {
+            font-size: 1.3rem;
+            font-weight: 400;
+            max-width: 800px;
+            opacity: 0.9;
+        }
+
+        /* Цветовые схемы слайдов */
+        .dark-text {
+            color: #fff;
+        }
+        .light-text {
+            color: #1e1e1e;
+        }
+
+        /* Сетки */
+        .grid-2, .grid-3 {
+            display: grid;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        /* Карточки */
+        .card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(8px);
+            border-radius: 24px;
+            padding: 2rem;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .card i {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #d4a373; /* акцентный цвет */
+        }
+        .card.light {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            color: #1e1e1e;
+        }
+        .card.light i {
+            color: #b5835a;
+        }
+
+        /* Блок с портретом */
+        .portrait-block {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+        .portrait-img {
+            flex: 1 1 300px;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+        }
+        .portrait-img img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .portrait-text {
+            flex: 2 1 400px;
+        }
+
+        /* Разделенный экран для слайда 5 */
+        .split-screen {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+        .split-half {
+            flex: 1 1 300px;
+            background: #f1f3f5;
+            border-radius: 32px;
+            padding: 2rem;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2);
+        }
+        .split-half img {
+            width: 100%;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Тарифы (колонки) */
+        .tariff-card {
+            background: #ffffff;
+            border-radius: 32px;
+            padding: 2rem;
+            box-shadow: 0 20px 35px -8px rgba(0,0,0,0.1);
+            border: 1px solid #dee2e6;
+            transition: transform 0.2s;
+        }
+        .tariff-card:hover {
+            transform: translateY(-5px);
+        }
+        .tariff-card h3 {
+            font-size: 1.7rem;
+            margin-bottom: 1.5rem;
+            color: #2b2d42;
+        }
+
+        /* Цифры и воронка (слайд 7) */
+        .big-number {
+            font-size: 6rem;
+            font-weight: 800;
+            color: #b5835a;
+            line-height: 1;
+            margin-right: 1rem;
+        }
+        .example-row {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            background: #2b2d42;
+            color: white;
+            border-radius: 40px;
+            padding: 2.5rem;
+            margin-top: 2rem;
+        }
+
+        /* QR и контакты */
+        .qr-block {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        .qr-code {
+            background: white;
+            padding: 1rem;
+            border-radius: 24px;
+        }
+        .contacts {
+            font-size: 1.3rem;
+        }
+        .contacts i {
+            margin-right: 1rem;
+            color: #b5835a;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .slide {
+                padding: 3rem 1.5rem;
+            }
+            h1 { font-size: 2.8rem; }
+            h2 { font-size: 2.2rem; }
+        }
+
+        /* Специфичные фоны */
+        #slide1 .slide-bg {
+            background-image: url('https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+        }
+        #slide2 {
+            background: #0d0f14;
+            color: white;
+        }
+        #slide4 {
+            background: #f8f9fa;
+        }
+        #slide7 {
+            background: linear-gradient(145deg, #1e1e2f 0%, #2b2d42 100%);
+            color: white;
+        }
+        #slide8 {
+            background: #edede9;
+        }
+    </style>
+</head>
+<body>
+    <div class="slides">
+
+        <!-- СЛАЙД 1: Титульный -->
+        <section class="slide" id="slide1">
+            <div class="slide-bg"></div>
+            <div class="content dark-text">
+                <h1>AXIOM.<br>Защита инвестиций и независимый аудит в премиальном строительстве.</h1>
+                <p class="subhead">Сокращаем бюджет стройки до 30% и гарантируем сдачу в срок. Технологичный контроль объектов глазами топ-менеджмента.</p>
+            </div>
+        </section>
+
+        <!-- СЛАЙД 2: Проблематика (темный фон, иконки) -->
+        <section class="slide" id="slide2">
+            <div class="content">
+                <h2>Почему 8 из 10 частных инвесторов теряют деньги на стройке?</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <i class="fas fa-chart-line"></i>
+                        <h3>Раздутые сметы</h3>
+                        <p>Подрядчики закладывают скрытую маржу и несуществующие объемы работ.</p>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-eye-slash"></i>
+                        <h3>Слепая зона</h3>
+                        <p>Инвестор не видит реальной картины на площадке и оплачивает брак, скрытый под чистовой отделкой.</p>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-clock"></i>
+                        <h3>Срыв сроков</h3>
+                        <p>Отсутствие жесткого графика и хаос в управлении субподрядчиками замораживают ваши активы.</p>
+                    </div>
+                    <div class="card">
+                        <i class="fas fa-times-circle"></i>
+                        <h3>Ошибки концепции</h3>
+                        <p>Строится объект, который не отвечает запросам рынка и не приносит плановый ROI.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- СЛАЙД 3: Решение (Экосистема Axiom) -->
+        <section class="slide" style="background: #f4f1eb;">
+            <div class="content">
+                <h2>Комплексная защита ваших активов</h2>
+                <div class="grid-3">
+                    <div class="card light">
+                        <i class="fas fa-chart-pie"></i>
+                        <h3>Инвестиционный консалтинг</h3>
+                        <p>Анализируем ликвидность участка и просчитываем финансовую модель до вложения средств.</p>
+                    </div>
+                    <div class="card light">
+                        <i class="fas fa-hard-hat"></i>
+                        <h3>Служба технического заказчика</h3>
+                        <p>Жесткий контроль подрядчиков, приемка скрытых работ и аудит смет.</p>
+                    </div>
+                    <div class="card light">
+                        <i class="fas fa-mobile-alt"></i>
+                        <h3>Цифровой надзор</h3>
+                        <p>Внедряем технологии объективного контроля. Вы видите стройку как на ладони со своего смартфона.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- СЛАЙД 4: Экспертиза (портрет) -->
+        <section class="slide" id="slide4">
+            <div class="content">
+                <div class="portrait-block">
+                    <div class="portrait-img">
+                        <!-- Фото уверенного управленца (Unsplash) -->
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80" alt="Основатель Axiom">
+                    </div>
+                    <div class="portrait-text">
+                        <h2>Кто защищает ваши интересы?</h2>
+                        <p style="font-size: 1.3rem; margin-bottom: 1.5rem;"><strong>Основатель компании — управленец высшего звена с опытом работы заместителем генерального директора в крупном генподряде.</strong></p>
+                        <p style="font-size: 1.2rem;">Мы знаем систему изнутри. Мы знаем, где подрядчики прячут деньги, как маскируют недоделки и как заставить их работать по графику.</p>
+                        <p style="font-size: 1.2rem; margin-top: 1.5rem; font-weight: 600;">Мы не строим сами. Мы защищаем тех, кто платит за стройку.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- СЛАЙД 5: Технологии контроля (разделенный экран) -->
+        <section class="slide" style="background: #eef2f5;">
+            <div class="content">
+                <h2>Стройка XXI века: Тотальная прозрачность</h2>
+                <div class="split-screen">
+                    <div class="split-half">
+                        <img src="https://images.unsplash.com/photo-1473968512647-3e447244af8f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Аэромониторинг">
+                        <h3>Аэромониторинг</h3>
+                        <p>Регулярные облеты площадки. Вы получаете 4K-видеоотчеты о реальной динамике строительства, а не отписки на бумаге.</p>
+                    </div>
+                    <div class="split-half">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Цифровой двойник">
+                        <h3>Фотофиксация + дашборды</h3>
+                        <p>Создаем цифровой двойник объекта. Ни одна труба не будет зашита без фиксации. Четкие дашборды по бюджету и срокам.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- СЛАЙД 6: Форматы сотрудничества (три колонки-тарифы) -->
+        <section class="slide" style="background: #ffffff;">
+            <div class="content">
+                <h2>Как мы можем быть полезны уже завтра</h2>
+                <div class="grid-3">
+                    <div class="tariff-card">
+                        <h3>Экспресс-аудит</h3>
+                        <p>Выезд на объект, проверка сметы, съемка с воздуха, дефектовка. Быстрый срез реального положения дел.</p>
+                    </div>
+                    <div class="tariff-card">
+                        <h3>Инвестиционное моделирование</h3>
+                        <p>Анализ участка или недостроя. Разработка концепции, просчет стоимости реализации и ROI.</p>
+                    </div>
+                    <div class="tariff-card">
+                        <h3>Генеральный контроль</h3>
+                        <p>Функции технического заказчика «под ключ». Полное сопровождение от идеи до ввода в эксплуатацию.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- СЛАЙД 7: Модель экономии (крупные цифры, пример) -->
+        <section class="slide" id="slide7">
+            <div class="content">
+                <h2 style="color: white;">Наша работа окупает себя на этапе фундамента</h2>
+                <div class="example-row">
+                    <div>
+                        <span class="big-number">25</span> млн руб.
+                    </div>
+                    <div>
+                        <p style="font-size: 1.5rem; font-weight: 300;">Смета подрядчика на монолитные работы</p>
+                    </div>
+                </div>
+                <div class="example-row" style="background: #b5835a; color: #1e1e1e; margin-top: 0;">
+                    <div>
+                        <span class="big-number" style="color: #1e1e1e;">4,5</span> млн руб.
+                    </div>
+                    <div>
+                        <p style="font-size: 1.5rem; font-weight: 600;">Оптимизация после аудита AXIOM</p>
+                        <p>без потери качества и надежности конструкции</p>
+                    </div>
+                </div>
+                <p style="color: white; font-size: 1.2rem; margin-top: 2rem;">Инвестиции защищены. Бюджет сокращен.</p>
+            </div>
+        </section>
+
+        <!-- СЛАЙД 8: Призыв к действию (оффер, QR, контакты) -->
+        <section class="slide" id="slide8">
+            <div class="content" style="text-align: center;">
+                <h2>Проверьте своих строителей за наш счет</h2>
+                <p style="font-size: 1.5rem; max-width: 800px; margin: 1rem auto 2rem;">Не ждите, пока смета вырастет вдвое, а сроки сорвутся. Давайте проведем бесплатный экспресс-аудит вашей текущей сметы или оценим ликвидность участка.</p>
+                <div class="qr-block">
+                    <div class="qr-code">
+                        <!-- Генерация QR-кода через QRServer (ведет на Telegram) -->
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://t.me/axiom_audit" alt="Telegram QR">
+                    </div>
+                    <div class="contacts">
+                        <p><i class="fas fa-phone-alt"></i> +7 (495) 000-00-00</p>
+                        <p><i class="fab fa-telegram"></i> @axiom_audit</p>
+                        <p><i class="fas fa-envelope"></i> info@axiom.ru</p>
+                    </div>
+                </div>
+                <p style="margin-top: 3rem; font-size: 1.1rem; opacity: 0.8;">Это займет 1 день и даст вам объективную картину ваших инвестиций.</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- Небольшой футер (опционально) -->
+    <footer style="text-align: center; padding: 1rem; background: #0d0f14; color: #aaa; font-size: 0.9rem;">
+        AXIOM — защита инвестиций в премиальном строительстве © 2025
+    </footer>
+</body>
+</html>
